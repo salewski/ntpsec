@@ -112,24 +112,30 @@ def build(ctx):
             "M PTHREAD CRYPTO RT SOCKET NSL",
     )
 
+    pypath = "%s/pylib/" % srcnode
+
     ctx(
         features="pytest",
         pytest_source="pylib/test_util.py",
+        pytest_paths=pypath,
 		ut_str="${PYTHON} ${SRC}"
     )
     ctx(
         features="pytest",
         pytest_source="pylib/test_agentx.py",
+        pytest_paths=pypath,
 		ut_str="${PYTHON} ${SRC}"
     )
     ctx(
         features="pytest",
         pytest_source="pylib/test_packet.py",
+        pytest_paths=pypath,
 		ut_str="${PYTHON} ${SRC}"
     )
     ctx(
         features="pytest",
         pytest_source="pylib/test_statfiles.py",
+        pytest_paths=pypath,
 		ut_str="${PYTHON} ${SRC}"
     )
 
@@ -139,5 +145,6 @@ def build(ctx):
         features="subst",
         source=testpysrc,
         target=[x.get_bld() for x in testpysrc],
+        pytest_paths=pypath,
         chmod=Utils.O755,
     )
