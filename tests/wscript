@@ -1,3 +1,4 @@
+import os
 from waflib import Utils  # pylint: disable=import-error
 
 def build(ctx):
@@ -116,6 +117,8 @@ def build(ctx):
     testpylib.get_bld().mkdir()
 
     pypath = pylib.get_bld()
+    linkpath = ctx.bldnode.make_node("tests/pylib/ntp")
+    os.symlink(pypath.abspath(), linkpath.abspath())
 
     ctx(
         features="pytest",
@@ -146,6 +149,5 @@ def build(ctx):
         features="subst",
         source=testpysrc,
         target=[x.get_bld() for x in testpysrc],
-        pytest_paths=pypath,
         chmod=Utils.O755,
     )
