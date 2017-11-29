@@ -1025,6 +1025,19 @@ def afterparty(ctx):
     if ctx.cmd in ('uninstall', 'install'):
         # Make sure libs are removed from the old location
         FixConfig.cleanup_python_libs(ctx, ctx.cmd)
+    for x in ("ntpclients", "tests/pylib",):
+        # List used to be longer...
+        path_build = ctx.bldnode.make_node("pylib")
+        path_source = ctx.bldnode.make_node(x + "/ntp")
+        relpath = ("../" * (x.count("/")+1)) + path_build.path_from(ctx.bldnode)
+        if ctx.cmd in ('install', 'build'):
+            if ((not path_source.exists() or
+                    os.readlink(path_source.abspath()) != relpath)):
+                try:
+                    os.remove(path_source.abspath())
+                except OSError:
+                    pass
+                os.symlink(relpath, path_source.abspath())
 
 
 python_scripts = [
@@ -1101,22 +1114,6 @@ def build(ctx):
     ctx.manpage(8, "ntpclients/ntpkeygen-man.txt")
     ctx.manpage(8, "ntpclients/ntpleapfetch-man.txt")
     ctx.manpage(8, "ntpclients/ntpwait-man.txt")
-
-    # formerly part of afterparty(), these need to be in place for tests
-    for x in ("ntpclients", "tests/pylib",):
-        # List used to be longer...
-        path_build = ctx.bldnode.make_node("pylib")
-        path_source = ctx.bldnode.make_node(x + "/ntp")
-        relpath = ("../" * (x.count("/")+1)) + path_build.path_from(ctx.bldnode)
-        if ctx.cmd in ('install', 'build'):
-            if ((not path_source.exists() or
-                    os.readlink(path_source.abspath()) != relpath)):
-                try:
-                    os.remove(path_source.abspath())
-                except OSError:
-                    pass
-                os.symlink(relpath, path_source.abspath())
-
 
     # Skip running unit tests on a cross compile build
     if not ctx.env.ENABLE_CROSS:
