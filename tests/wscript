@@ -112,14 +112,25 @@ def build(ctx):
             "M PTHREAD CRYPTO RT SOCKET NSL",
     )
 
-    testpylib.get_bld().mkdir()
+    #testpylib.get_bld().mkdir()
 
     ctx(
-        features="subst",
-        source=testpysrc,
-        target=[x.get_bld() for x in testpysrc],
-        chmod=Utils.O755,
+        features="pytest",
+        pytest_source="pylib/test_util.py",
+		ut_str="${PYTHON} ${SRC}"
     )
-
-    # ctx.exec_command("%s/tests/pylib/test_statfiles.py" % srcnode)
-    # ctx.exec_command("%s/tests/pylib/test_util.py" % srcnode)
+    ctx(
+        features="pytest",
+        pytest_source="pylib/test_agentx.py",
+		ut_str="${PYTHON} ${SRC}"
+    )
+    ctx(
+        features="pytest",
+        pytest_source="pylib/test_packet.py",
+		ut_str="${PYTHON} ${SRC}"
+    )
+    ctx(
+        features="pytest",
+        pytest_source="pylib/test_statfiles.py",
+		ut_str="${PYTHON} ${SRC}"
+    )

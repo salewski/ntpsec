@@ -25,6 +25,7 @@ from wafhelpers.probes \
     import probe_header_with_prerequisites, probe_function_with_prerequisites
 from wafhelpers.test import test_write_log, test_print_log
 from wafhelpers.fix_python_config import FixConfig
+import pytest
 
 
 pprint.__doc__ = None
@@ -91,6 +92,7 @@ def configure(ctx):
     ctx.run_build_cls = 'check'
     ctx.load('waf', tooldir='wafhelpers/')
     ctx.load('waf_unit_test')
+    ctx.load('pytest')
     ctx.load('gnu_dirs')
 
     with open("VERSION", "r") as f:
