@@ -112,8 +112,6 @@ def build(ctx):
             "M PTHREAD CRYPTO RT SOCKET NSL",
     )
 
-    #testpylib.get_bld().mkdir()
-
     ctx(
         features="pytest",
         pytest_source="pylib/test_util.py",
@@ -133,4 +131,13 @@ def build(ctx):
         features="pytest",
         pytest_source="pylib/test_statfiles.py",
 		ut_str="${PYTHON} ${SRC}"
+    )
+
+    testpylib.get_bld().mkdir()
+
+    ctx(
+        features="subst",
+        source=testpysrc,
+        target=[x.get_bld() for x in testpysrc],
+        chmod=Utils.O755,
     )
